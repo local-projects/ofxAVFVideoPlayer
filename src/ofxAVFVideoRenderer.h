@@ -51,6 +51,7 @@
     NSMutableData *_amplitudes;
     int _numAmplitudes;
     id _periodicTimeObserver;
+	AVAssetReader *assetReader;
 }
 
 @property (nonatomic, retain) AVPlayer * player;
