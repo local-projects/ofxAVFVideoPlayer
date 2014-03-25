@@ -186,7 +186,7 @@ int count = 0;
                 }
 
 				/**/
-				/*
+/*
 
                 if (self.theFutureIsNow) {
                     // Only monitor audio if the file is local and has audio tracks.
@@ -277,7 +277,7 @@ int count = 0;
                         }
                     }
                 }
-				 */
+*/
 				/**/
                 
                 _bLoading = NO;
