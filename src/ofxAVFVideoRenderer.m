@@ -71,6 +71,7 @@ int count = 0;
         _frameRate = 0.0;
         _playbackRate = 1.0;
         _bLoops = false;
+		assetReader = nil;
     }
     return self;
 }
@@ -121,7 +122,7 @@ int count = 0;
     
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
     NSString *tracksKey = @"tracks";
-    
+
     [asset loadValuesAsynchronouslyForKeys:@[tracksKey] completionHandler: ^{
         static const NSString *kItemStatusContext;
         // Perform the following back on the main thread
@@ -323,7 +324,9 @@ int count = 0;
 		[self.playerItemVideoOutput release];
 		[self.player release];
 		if(self.theFutureIsNow){
-			[assetReader release];
+			if (assetReader){
+				[assetReader release];
+			}
 		}
 		[p release];
 
