@@ -43,11 +43,11 @@ bool ofxAVFVideoPlayer::loadMovie(string path)
 	
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
-    moviePlayer = [[AVFVideoRenderer alloc] init];
-    [moviePlayer setUseAlpha:(pixelFormat == OF_PIXELS_RGBA)];
-    [moviePlayer setUseTexture:YES];
+	moviePlayer = [[AVFVideoRenderer alloc] init];
+	moviePlayer->_useAlpha = (pixelFormat == OF_PIXELS_RGBA);
+	moviePlayer->_useTexture = YES;
     
-    bTheFutureIsNow = moviePlayer.theFutureIsNow;
+    bTheFutureIsNow = moviePlayer->_bTheFutureIsNow;
 
 	if (Poco::icompare(path.substr(0, 7), "http://")  == 0 ||
         Poco::icompare(path.substr(0, 8), "https://") == 0 ||
@@ -104,7 +104,7 @@ void ofxAVFVideoPlayer::update()
                 reallocatePixels();
             }
             else {
-                fbo.allocate(moviePlayer.width, moviePlayer.height);
+                fbo.allocate([moviePlayer width], [moviePlayer height]);
             }
             bInitialized = true;
 
@@ -161,54 +161,6 @@ bool ofxAVFVideoPlayer::isFrameNew()
 }
 
 //--------------------------------------------------------------
-float ofxAVFVideoPlayer::getAmplitude(int channel)
-{
-    return getAmplitudeAt(getPosition(), channel);
-}
-
-//--------------------------------------------------------------
-float ofxAVFVideoPlayer::getAmplitudeAt(float pos, int channel)
-{
-    if (bTheFutureIsNow == false) return 0;
-    
-    pos = ofClamp(pos, 0, 1);
-    channel = ofClamp(channel, 0, 1);
-    
-    if (!moviePlayer || ![moviePlayer isAudioLoaded] || [moviePlayer numAmplitudes] == 0 || !bInitialized) {
-        return 0;
-    }
-    
-    int idx = (int)(pos * ([moviePlayer numAmplitudes] - 2));
-    
-    // Make sure the index is pointing at the right channel
-    // EZ: I know this is ghetto, but it works...
-    if (idx % 2 == 0 && channel == 1) {
-        ++idx;
-    }
-    else if (idx % 2 == 1 && channel == 0) {
-        --idx;
-    }
-
-    float amp;
-    [moviePlayer.amplitudes getBytes:&amp range:NSMakeRange(idx * sizeof(float), sizeof(float))];
-    return amp;
-}
-
-//--------------------------------------------------------------
-int ofxAVFVideoPlayer::getNumAmplitudes()
-{
-    return [moviePlayer numAmplitudes];
-}
-
-//--------------------------------------------------------------
-float * ofxAVFVideoPlayer::getAllAmplitudes()
-{
-    if (bTheFutureIsNow == false) return NULL;
-    
-    return (float *)[moviePlayer.amplitudes bytes];
-}
-
-//--------------------------------------------------------------
 unsigned char * ofxAVFVideoPlayer::getPixels()
 {
     if (bTheFutureIsNow) {
@@ -250,7 +202,7 @@ ofPixelsRef ofxAVFVideoPlayer::getPixelsRef()
 ofTexture* ofxAVFVideoPlayer::getTexture()
 {
     if (bTheFutureIsNow) {
-        if (moviePlayer.textureAllocated) {
+        if ([moviePlayer textureAllocated]) {
             updateTexture();
             return &tex;
         }
@@ -312,19 +264,19 @@ bool ofxAVFVideoPlayer::isPlaying()
 //--------------------------------------------------------------
 bool ofxAVFVideoPlayer::getIsMovieDone()
 {
-    return moviePlayer.isMovieDone;
+    return moviePlayer->_bMovieDone;
 }
 
 //--------------------------------------------------------------
 float ofxAVFVideoPlayer::getPosition()
 {
-    return moviePlayer.position;
+    return [moviePlayer position];
 }
 
 //--------------------------------------------------------------
 float ofxAVFVideoPlayer::getCurrentTime()
 {
-    return moviePlayer.currentTime;
+    return [moviePlayer currentTime];
 }
 
 //--------------------------------------------------------------
@@ -336,19 +288,19 @@ float ofxAVFVideoPlayer::getPositionInSeconds()
 //--------------------------------------------------------------
 int ofxAVFVideoPlayer::getCurrentFrame()
 {
-    return moviePlayer.currentFrame;
+    return [moviePlayer currentFrame];
 }
 
 //--------------------------------------------------------------
 float ofxAVFVideoPlayer::getDuration()
 {
-    return moviePlayer.duration;
+    return [moviePlayer duration];
 }
 
 //--------------------------------------------------------------
 int ofxAVFVideoPlayer::getTotalNumFrames()
 {
-    return moviePlayer.totalFrames;
+    return [moviePlayer totalFrames];
 }
 
 //--------------------------------------------------------------
@@ -361,7 +313,7 @@ bool ofxAVFVideoPlayer::isPaused()
 float ofxAVFVideoPlayer::getSpeed()
 {
     if (moviePlayer) {
-        return moviePlayer.playbackRate;
+        return moviePlayer->_playbackRate;
     }
     
     return 0;
@@ -370,7 +322,7 @@ float ofxAVFVideoPlayer::getSpeed()
 //--------------------------------------------------------------
 ofLoopType ofxAVFVideoPlayer::getLoopState()
 {
-    if (moviePlayer && [moviePlayer loops])
+    if (moviePlayer && moviePlayer->_bLoops)
         return OF_LOOP_NORMAL;
     
 	return OF_LOOP_NONE;
@@ -380,7 +332,7 @@ ofLoopType ofxAVFVideoPlayer::getLoopState()
 float ofxAVFVideoPlayer::getVolume()
 {
     if (moviePlayer) {
-        return moviePlayer.volume;
+        return [moviePlayer volume];
     }
     
     return 0;
@@ -540,10 +492,10 @@ void ofxAVFVideoPlayer::updateTexture()
     if (bTheFutureIsNow == false) return;
     
     if (moviePlayer.textureAllocated) {
-		tex.setUseExternalTextureID(moviePlayer.textureID);
+		tex.setUseExternalTextureID([moviePlayer textureID]);
 		
 		ofTextureData& data = tex.getTextureData();
-		data.textureTarget = moviePlayer.textureTarget;
+		data.textureTarget = [moviePlayer textureTarget];
 		data.width = getWidth();
 		data.height = getHeight();
 		data.tex_w = getWidth();

@@ -16,6 +16,8 @@
 
 @interface AVFVideoRenderer : NSObject
 {
+@public
+
     BOOL _bTheFutureIsNow;
     
     AVPlayer * _player;
@@ -48,33 +50,33 @@
     BOOL _bMovieDone;
     	
     // New school audio stuff
-    NSMutableData *_amplitudes;
-    int _numAmplitudes;
-    id _periodicTimeObserver;
-	AVAssetReader *assetReader;
+    //NSMutableData *_amplitudes;
+    //int _numAmplitudes;
+    //id _periodicTimeObserver;
+	//AVAssetReader *assetReader;
 }
 
-@property (nonatomic, retain) AVPlayer * player;
-
-@property (nonatomic, assign, readonly, getter = theFutureIsNow) BOOL bTheFutureIsNow;
-
+//@property (nonatomic, retain) AVPlayer * player;
+//
+//@property (nonatomic, assign, readonly, getter = theFutureIsNow) BOOL bTheFutureIsNow;
+//
 @property (nonatomic, assign, readonly) double width;
 @property (nonatomic, assign, readonly) double height;
-
+//
 @property (nonatomic, assign, readonly, getter = isLoading) BOOL bLoading;
 @property (nonatomic, assign, readonly, getter = isLoaded) BOOL bLoaded;
 @property (nonatomic, assign, readonly, getter = isAudioLoaded) BOOL bAudioLoaded;
 @property (nonatomic, assign, getter = isPaused, setter = setPaused:) BOOL bPaused;
 @property (nonatomic, assign, readonly, getter = isMovieDone) BOOL bMovieDone;
 @property (nonatomic, assign, readonly) BOOL isPlaying;
-
+//
 @property (nonatomic, assign) BOOL useAlpha;
 @property (nonatomic, assign) BOOL useTexture;
-
+//
 @property (nonatomic, assign, readonly) BOOL textureAllocated;
 @property (nonatomic, assign, readonly) GLuint textureID;
 @property (nonatomic, assign, readonly) GLenum textureTarget;
-
+//
 @property (nonatomic, assign, readonly) double frameRate;
 @property (nonatomic, assign, readonly) double duration;
 @property (nonatomic, assign, readonly) int totalFrames;
@@ -84,9 +86,9 @@
 @property (nonatomic, assign) double playbackRate;
 @property (nonatomic, assign, getter = loops, setter = setLoops:) BOOL bLoops;
 @property (nonatomic, assign) float volume;
-
-@property (nonatomic, retain, readonly) NSMutableData* amplitudes;
-@property (nonatomic, assign, readonly) int numAmplitudes;
+//
+//@property (nonatomic, retain, readonly) NSMutableData* amplitudes;
+//@property (nonatomic, assign, readonly) int numAmplitudes;
 
 - (void)loadFilePath:(NSString *)filePath;
 - (void)loadURLPath:(NSString *)urlPath;
@@ -103,5 +105,6 @@
 
 // Old school video stuff
 - (void)render;
+
 
 @end

@@ -30,11 +30,6 @@ public:
     void                update();
     void                play();
     void                stop();
-    
-    float               getAmplitude(int channel = 0);
-    float               getAmplitudeAt(float pos, int channel = 0);
-    float *             getAllAmplitudes();
-    int                 getNumAmplitudes();
 	
     bool                isFrameNew(); //returns true if the frame has changed in this update cycle
     
