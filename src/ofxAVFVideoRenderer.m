@@ -296,7 +296,7 @@ int count = 0;
 
 
     [self stop];
-	[_player cancelPendingPrerolls];
+	//[_player cancelPendingPrerolls];
 	//[_player seekToTime:kCMTimeZero];
             
     if (_bTheFutureIsNow) {
