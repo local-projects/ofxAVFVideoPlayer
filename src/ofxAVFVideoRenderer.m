@@ -7,6 +7,7 @@
 //
 
 #import "ofxAVFVideoRenderer.h"
+
 #import <Accelerate/Accelerate.h>
 
 @interface AVFVideoRenderer ()
@@ -160,6 +161,7 @@ int count = 0;
                     
                     // Create CVOpenGLTextureCacheRef for optimal CVPixelBufferRef to GL texture conversion.
                     if (_useTexture && !_textureCache) {
+
                         CVReturn err = CVOpenGLTextureCacheCreate(kCFAllocatorDefault, NULL,
                                                                   CGLGetCurrentContext(), CGLGetPixelFormat(CGLGetCurrentContext()),
                                                                   NULL, &_textureCache);
@@ -290,34 +292,51 @@ int count = 0;
 }
 
 //--------------------------------------------------------------
-- (void)dealloc
-{
+- (void)dealloc{
+
+
     [self stop];
+	[_player cancelPendingPrerolls];
+	//[_player seekToTime:kCMTimeZero];
             
     if (_bTheFutureIsNow) {
         _playerItemVideoOutput = nil;
-    
+
+
+		float t = CACurrentMediaTime();
         if (_textureCache != NULL) {
             CVOpenGLTextureCacheRelease(_textureCache);
             _textureCache = NULL;
         }
+		NSLog(@"rel 1 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+
+
+		t = CACurrentMediaTime();
         if (_latestTextureFrame != NULL) {
             CVOpenGLTextureRelease(_latestTextureFrame);
             _latestTextureFrame = NULL;
         }
+		NSLog(@"rel 2 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+
+
+		t = CACurrentMediaTime();
         if (_latestPixelFrame != NULL) {
             CVPixelBufferRelease(_latestPixelFrame);
             _latestPixelFrame = NULL;
         }
+		NSLog(@"rel 3 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
+	//	dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
 
-		NSAutoreleasePool * p = [[NSAutoreleasePool alloc] init];
-		[_playerItemVideoOutput release];
-		//[_player replaceCurrentItemWithPlayerItem:nil];
-		[_player release];
-		_player = nil;
-		[p release];
-
+		t = CACurrentMediaTime();
+			@autoreleasepool {
+				[_playerItemVideoOutput release];
+				//[_player replaceCurrentItemWithPlayerItem:nil];
+				[_player release];
+				_player = nil;
+			};
+		NSLog(@"rel 4 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+	//	});
     }
     else {
         // SK: Releasing the CARenderer is slow for some reason
@@ -334,12 +353,14 @@ int count = 0;
         }
 		[p release];
     }
-    
+
+	float t = CACurrentMediaTime();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_playerItem) {
         [_playerItem removeObserver:self forKeyPath:@"status"];
         _playerItem = nil;
     }
+	NSLog(@"rel 5 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
     [super dealloc];
 }
