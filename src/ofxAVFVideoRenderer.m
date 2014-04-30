@@ -49,7 +49,7 @@ int count = 0;
     self = [super init];
     if (self) {
         _bTheFutureIsNow = (NSClassFromString(@"AVPlayerItemVideoOutput") != nil);
-        NSLog(@"Is this the future? %d", _bTheFutureIsNow);
+        //NSLog(@"Is this the future? %d", _bTheFutureIsNow);
         
         if (_bTheFutureIsNow) {
             _player = [[AVPlayer alloc] init];
@@ -114,7 +114,7 @@ int count = 0;
 //    }
 //    _numAmplitudes = 0;
 
-    NSLog(@"Loading %@", [url absoluteString]);
+//    NSLog(@"Loading %@", [url absoluteString]);
     
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
     NSString *tracksKey = @"tracks";
