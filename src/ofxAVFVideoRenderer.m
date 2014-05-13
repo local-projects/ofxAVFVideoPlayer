@@ -308,7 +308,7 @@ int count = 0;
             CVOpenGLTextureCacheRelease(_textureCache);
             _textureCache = NULL;
         }
-		NSLog(@"rel 1 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+		//NSLog(@"rel 1 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
 
 		t = CACurrentMediaTime();
@@ -316,7 +316,7 @@ int count = 0;
             CVOpenGLTextureRelease(_latestTextureFrame);
             _latestTextureFrame = NULL;
         }
-		NSLog(@"rel 2 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+		//NSLog(@"rel 2 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
 
 		t = CACurrentMediaTime();
@@ -324,7 +324,7 @@ int count = 0;
             CVPixelBufferRelease(_latestPixelFrame);
             _latestPixelFrame = NULL;
         }
-		NSLog(@"rel 3 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+		//NSLog(@"rel 3 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
 	//	dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
 
@@ -335,7 +335,7 @@ int count = 0;
 				[_player release];
 				_player = nil;
 			};
-		NSLog(@"rel 4 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+		//NSLog(@"rel 4 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 	//	});
     }
     else {
@@ -360,7 +360,7 @@ int count = 0;
         [_playerItem removeObserver:self forKeyPath:@"status"];
         _playerItem = nil;
     }
-	NSLog(@"rel 5 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+	//NSLog(@"rel 5 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
     [super dealloc];
 }
