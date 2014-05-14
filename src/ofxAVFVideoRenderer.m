@@ -185,98 +185,6 @@ int count = 0;
                 }
 
 				/**/
-/*
-
-                if (_bTheFutureIsNow) {
-                    // Only monitor audio if the file is local and has audio tracks.
-                    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-                    if ([url isFileURL] && [audioTracks count] > 0) {
-                        AVAssetTrack *audioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-
-                        NSError *error = nil;
-                        assetReader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
-                        if (error != nil) {
-                            NSLog(@"Unable to create asset reader %@", [error localizedDescription]);
-                        }
-                        else if (audioTrack != nil) {
-                            // Read the audio track data
-                            NSMutableDictionary *bufferOptions = [NSMutableDictionary dictionary];
-                            [bufferOptions setObject:[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
-                            [bufferOptions setObject:@44100 forKey:AVSampleRateKey];
-                            [bufferOptions setObject:@2 forKey:AVNumberOfChannelsKey];
-    //                        [bufferOptions setObject:[NSData dataWithBytes:&channelLayout length:sizeof(AudioChannelLayout)] forKey:AVChannelLayoutKey];
-                            [bufferOptions setObject:@32 forKey:AVLinearPCMBitDepthKey];
-                            [bufferOptions setObject:@NO forKey:AVLinearPCMIsBigEndianKey];
-                            [bufferOptions setObject:@YES forKey:AVLinearPCMIsFloatKey];
-                            [bufferOptions setObject:@NO forKey:AVLinearPCMIsNonInterleaved];
-                            [assetReader addOutput:[AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack
-                                                                                              outputSettings:bufferOptions]];
-                            [assetReader startReading];
-                            
-                            count = 0;
-                        
-                            // Add a periodic time observer that will store the audio track data in a buffer that we can access later
-                            _periodicTimeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1001, [audioTrack nominalFrameRate] * 1001)
-											  queue:dispatch_queue_create("eventQueue", NULL)
-										 usingBlock:^(CMTime time) {
-											 if ([assetReader status] == AVAssetReaderStatusCompleted) {
-												 // Got all the data we need, kill this block.
-												 [_player removeTimeObserver:_periodicTimeObserver];
-												 
-												 _numAmplitudes = [_amplitudes length] / sizeof(float);
-												 _bAudioLoaded = YES;
-												 
-												 return;
-											 }
-											 
-											 if ([assetReader status] == AVAssetReaderStatusReading) {
-												 AVAssetReaderTrackOutput *output = [[assetReader outputs] objectAtIndex:0];
-												 CMSampleBufferRef sampleBuffer = [output copyNextSampleBuffer];
-												 
-												 while (sampleBuffer != NULL) {
-													 sampleBuffer = [output copyNextSampleBuffer];
-													 
-													 if (sampleBuffer == NULL)
-														 continue;
-													 
-													 CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-													 
-													 size_t lengthAtOffset;
-													 size_t totalLength;
-													 char* data;
-													 
-													 if (CMBlockBufferGetDataPointer(buffer, 0, &lengthAtOffset, &totalLength, &data) != noErr) {
-														 NSLog(@"error!");
-														 break;
-													 }
-													 
-													 CMItemCount numSamplesInBuffer = CMSampleBufferGetNumSamples(sampleBuffer);
-													 
-													 AudioBufferList audioBufferList;
-													 
-													 CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer,
-																											 NULL,
-																											 &audioBufferList,
-																											 sizeof(audioBufferList),
-																											 NULL,
-																											 NULL,
-																											 kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,  // pass in something else
-																											 &buffer);
-													 
-													 for (int bufferCount = 0; bufferCount < audioBufferList.mNumberBuffers; bufferCount++) {
-														 [_amplitudes appendBytes:audioBufferList.mBuffers[bufferCount].mData
-																		   length:audioBufferList.mBuffers[bufferCount].mDataByteSize];
-													 }
-													 
-													 CFRelease(buffer);
-													 CFRelease(sampleBuffer);
-												 }
-											 }
-										 }];
-                        }
-                    }
-                }
-*/
 				/**/
                 
                 _bLoading = NO;
@@ -302,41 +210,33 @@ int count = 0;
     if (_bTheFutureIsNow) {
         _playerItemVideoOutput = nil;
 
-
-		float t = CACurrentMediaTime();
         if (_textureCache != NULL) {
             CVOpenGLTextureCacheRelease(_textureCache);
             _textureCache = NULL;
         }
-		//NSLog(@"rel 1 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
+		dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
+			if (_latestTextureFrame != NULL) {
+				CVOpenGLTextureRelease(_latestTextureFrame);
+				_latestTextureFrame = NULL;
+			}
+		}
+		);
 
-		t = CACurrentMediaTime();
-        if (_latestTextureFrame != NULL) {
-            CVOpenGLTextureRelease(_latestTextureFrame);
-            _latestTextureFrame = NULL;
-        }
-		//NSLog(@"rel 2 %f", 1000.0f * ( CACurrentMediaTime() - t ));
+		//[NSThread sleepForTimeInterval:0.5]; //hopefully 0.5 secs is enough?
 
-
-		t = CACurrentMediaTime();
         if (_latestPixelFrame != NULL) {
             CVPixelBufferRelease(_latestPixelFrame);
             _latestPixelFrame = NULL;
         }
-		//NSLog(@"rel 3 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
-	//	dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
 
-		t = CACurrentMediaTime();
 			@autoreleasepool {
 				[_playerItemVideoOutput release];
 				//[_player replaceCurrentItemWithPlayerItem:nil];
 				[_player release];
 				_player = nil;
 			};
-		//NSLog(@"rel 4 %f", 1000.0f * ( CACurrentMediaTime() - t ));
-	//	});
     }
     else {
         // SK: Releasing the CARenderer is slow for some reason
@@ -354,13 +254,11 @@ int count = 0;
 		[p release];
     }
 
-	float t = CACurrentMediaTime();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_playerItem) {
         [_playerItem removeObserver:self forKeyPath:@"status"];
         _playerItem = nil;
     }
-	//NSLog(@"rel 5 %f", 1000.0f * ( CACurrentMediaTime() - t ));
 
     [super dealloc];
 }
