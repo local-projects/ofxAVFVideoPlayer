@@ -223,7 +223,7 @@ int count = 0;
 		}
 		);
 
-		[NSThread sleepForTimeInterval:0.5]; //hopefully 0.5 secs is enough?
+		[NSThread sleepForTimeInterval:0.1]; //hopefully 0.5 secs is enough?
 
         if (_latestPixelFrame != NULL) {
             CVPixelBufferRelease(_latestPixelFrame);
