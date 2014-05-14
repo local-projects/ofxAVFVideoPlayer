@@ -223,7 +223,7 @@ int count = 0;
 		}
 		);
 
-		//[NSThread sleepForTimeInterval:0.5]; //hopefully 0.5 secs is enough?
+		[NSThread sleepForTimeInterval:0.5]; //hopefully 0.5 secs is enough?
 
         if (_latestPixelFrame != NULL) {
             CVPixelBufferRelease(_latestPixelFrame);
@@ -231,12 +231,12 @@ int count = 0;
         }
 
 
-			@autoreleasepool {
-				[_playerItemVideoOutput release];
-				//[_player replaceCurrentItemWithPlayerItem:nil];
-				[_player release];
-				_player = nil;
-			};
+		@autoreleasepool {
+			[_playerItemVideoOutput release];
+			//[_player replaceCurrentItemWithPlayerItem:nil];
+			[_player release];
+			_player = nil;
+		};
     }
     else {
         // SK: Releasing the CARenderer is slow for some reason
