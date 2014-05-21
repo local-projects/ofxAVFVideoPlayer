@@ -59,7 +59,7 @@ int count = 0;
         _bLoading = NO;
         _bLoaded = NO;
         _bAudioLoaded = NO;
-        _bPaused = NO;
+        _bPaused = YES;
         _bMovieDone = NO;
         
         _useTexture = YES;
@@ -101,7 +101,7 @@ int count = 0;
     _bLoading = YES;
     _bLoaded = NO;
     _bAudioLoaded = NO;
-    _bPaused = NO;
+    _bPaused = YES;
     _bMovieDone = NO;
     
     _frameRate = 0.0;
