@@ -598,14 +598,15 @@ int count = 0;
 }
 
 //--------------------------------------------------------------
-- (int)audioDeviceID
+- (NSString *)getAudioDeviceID
 {
 	return _player.audioOutputDeviceUniqueID;
 }
+
 //--------------------------------------------------------------
-- (void)setAudioDevice:(NSString *)deviceId
+- (void)setAudioDeviceID:(NSString *)newID
 {
-	_player.audioOutputDeviceUniqueID = deviceId;
+	_player.audioOutputDeviceUniqueID = newID;
 }
 
 

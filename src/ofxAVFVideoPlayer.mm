@@ -377,11 +377,33 @@ void ofxAVFVideoPlayer::setVolume(float volume)
 //--------------------------------------------------------------
 void ofxAVFVideoPlayer::setAudioDevice(string _deviceID)
 {
+	if (moviePlayer){
 	NSString * str = [NSString stringWithUTF8String: _deviceID.c_str()];
-	
-	[moviePlayer setAudioDevice:str];
+	[moviePlayer setAudioDeviceID:str];
+	}
+	else {
+		ofLogNotice("ofxAVFVideoPlayer") << "Attempted to setAudioDevice() but we have no moviePlayer"; // No moviePlayer to set
+	}
 }
 
+//--------------------------------------------------------------
+string ofxAVFVideoPlayer::getAudioDeviceID()
+{
+
+	string ret;
+
+	if (moviePlayer){
+		NSString * str = [moviePlayer getAudioDeviceID];
+		if (str != nil){
+			ret = string([str UTF8String]);
+		}
+		else {ret = "";}	// Bad: We got no device back
+	}
+	else {ret = "";}		// Bad: We have no moviePlayer
+	
+	return ret;
+	
+}
 
 //--------------------------------------------------------------
 void ofxAVFVideoPlayer::setBalance(float balance)
