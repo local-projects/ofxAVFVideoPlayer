@@ -86,6 +86,7 @@
 @property (nonatomic, assign) double playbackRate;
 @property (nonatomic, assign, getter = loops, setter = setLoops:) BOOL bLoops;
 @property (nonatomic, assign) float volume;
+@property (nonatomic, assign) int audioDeviceID;
 //
 //@property (nonatomic, retain, readonly) NSMutableData* amplitudes;
 //@property (nonatomic, assign, readonly) int numAmplitudes;

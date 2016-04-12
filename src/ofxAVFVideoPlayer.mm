@@ -375,6 +375,15 @@ void ofxAVFVideoPlayer::setVolume(float volume)
 }
 
 //--------------------------------------------------------------
+void ofxAVFVideoPlayer::setAudioDevice(string _deviceID)
+{
+	NSString * str = [NSString stringWithUTF8String: _deviceID.c_str()];
+	
+	[moviePlayer setAudioDevice:str];
+}
+
+
+//--------------------------------------------------------------
 void ofxAVFVideoPlayer::setBalance(float balance)
 {
 

@@ -73,7 +73,8 @@ public:
     void                setSpeed(float speed);
     void                setLoopState(ofLoopType state);
     void                setVolume(float volume);
-    
+		void								setAudioDevice(string _deviceID);
+	
     // ofxAVFVideoPlayer only supports OF_PIXELS_RGB and OF_PIXELS_RGBA.
     bool                setPixelFormat(ofPixelFormat pixelFormat);
     ofPixelFormat       getPixelFormat();

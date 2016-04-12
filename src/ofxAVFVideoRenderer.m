@@ -597,4 +597,16 @@ int count = 0;
     _player.volume = volume;
 }
 
+//--------------------------------------------------------------
+- (int)audioDeviceID
+{
+	return _player.audioOutputDeviceUniqueID;
+}
+//--------------------------------------------------------------
+- (void)setAudioDevice:(NSString *)deviceId
+{
+	_player.audioOutputDeviceUniqueID = deviceId;
+}
+
+
 @end
