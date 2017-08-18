@@ -215,13 +215,13 @@ int count = 0;
             _textureCache = NULL;
         }
 
-		dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
+		//dispatch_async( dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0 ), ^{
 			if (_latestTextureFrame != NULL) {
 				CVOpenGLTextureRelease(_latestTextureFrame);
 				_latestTextureFrame = NULL;
 			}
-		}
-		);
+		//}
+		//);
 
 		[NSThread sleepForTimeInterval:0.1]; //hopefully 0.5 secs is enough?
 
